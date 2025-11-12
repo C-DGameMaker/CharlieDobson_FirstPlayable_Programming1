@@ -88,7 +88,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.ReadKey(true);
             Console.Clear();
         }
-
+        //Outside of game loop stuff
         static void MakeMap(int scale)
         {
             for (int b = 0; b < map.GetLength(1) * scale + 2; b++)
@@ -178,12 +178,17 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void HUD()
         {
-            
-        }
+            Console.SetCursorPosition(65, 0);
+            Console.Write("HUD");
 
+            Console.SetCursorPosition(60, 1);
+            Console.Write("  ~~~~~~~~~~");
+        }
+        //Actual Game loop logic
         static void Draw()
         {
             MakeMap(2);
+            HUD();
         }
 
         
