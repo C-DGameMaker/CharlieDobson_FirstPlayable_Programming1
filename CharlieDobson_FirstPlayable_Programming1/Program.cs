@@ -51,7 +51,8 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void Main(string[] args)
         {
-            Intro();
+            Console.CursorVisible = false;
+            //Intro();
             while(isAlive == true)
             {
                 Draw();
@@ -96,12 +97,20 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 {
                     Console.Write("╔");
                 }
-                if(b == map.GetLength(1) * scale + 1)
+
+                else if(b == map.GetLength(1) * scale + 1)
                 {
                     Console.Write("╗");
                 }
 
-                Console.Write("═");
+                else if (b > map.GetLength(1) * scale + 1)
+                {
+                    Console.Write(" ");
+                }
+                else
+                {
+                    Console.Write("═");
+                }
             }
             Console.Write("\n");
 
@@ -150,13 +159,21 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 {
                     Console.Write("╚");
                 }
-                if (b == map.GetLength(1) * scale + 1)
+                else if (b == map.GetLength(1) * scale + 1)
                 {
                     Console.Write("╝");
                 }
-                Console.Write("═");
+                else if(b > map.GetLength(1) * scale + 1)
+                {
+                    Console.Write(" ");
+                }
+                else
+                {
+                    Console.Write("═");
+                }
+
+                    
             }
-            Console.Write("\n");
         }
 
         static void HUD()
@@ -166,7 +183,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void Draw()
         {
-            MakeMap(1);
+            MakeMap(2);
         }
 
         
