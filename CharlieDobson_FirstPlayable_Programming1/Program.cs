@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -28,26 +29,16 @@ namespace CharlieDobson_FirstPlayable_Programming1
         // ▓ = mountain
         // █ = trees
 
-        static string[,] map =
-        {
-            {"▓", "▓", "▓", "░", "░", "█", "█", "█", "█", "░", "░", "░", "█", "█", "█", "█", "█"},
-            {"░", "▓", "░", "░", "█", "█", "▒", "█", "░", "░", "░", "░", "░", "█", "█", "█", "░"},
-            {"█", "░", "░", "░", "█", "▒", "▒", "█", "░", "░", "░", "░", "░", "█", "█", "░", "░"},
-            {"█", "█", "░", "░", "█", "▒", "▒", "█", "█", "█", "░", "░", "░", "░", "░", "░", "░"},
-            {"█", "█", "█", "░", "█", "█", "▒", "▒", "▒", "█", "░", "░", "░", "░", "░", "░", "░"},
-            {"▒", "▒", "▒", "░", "░", "█", "█", "█", "▒", "█", "░", "░", "░", "░", "░", "░", "░"},
-            {"▒", "▒", "▒", "▒", "░", "░", "█", "█", "█", "█", "░", "░", "░", "░", "▒", "▒", "▒"},
-            {"█", "█", "█", "░", "░", "░", "░", "█", "█", "░", "░", "░", "░", "░", "▒", "▒", "▒"},
-            {"█", "█", "░", "░", "░", "░", "░", "░", "█", "░", "░", "░", "░", "░", "▒", "▒", "▓"},
-            {"▓", "█", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "▓", "▓", "▓"},
-            {"▓", "▓", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "▓", "▓", "▓", "▓"},
-            {"▓", "▓", "▓", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "▓", "▓", "▓"},
-            {"▓", "▓", "▓", "▓", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "▓", "▓"},
-        };
+        static string map = "Map.txt";
+
+        static string[] inGameMap = File.ReadAllLines(map);
 
         static int scaleMap = 2;
+
+        static ConsoleColor[] mapColors = { ConsoleColor.Green, ConsoleColor.DarkGreen, ConsoleColor.Blue, ConsoleColor.Gray};
+
         //Turn based stuff
-        static int turn = -1;
+        static int turn = 0;
 
         static int xMovement = 0;
         static int yMovement = 0;
@@ -66,7 +57,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void Main(string[] args)
         {
-            //Console.CursorVisible = false;
+            Console.CursorVisible = false;
             //Intro();
             //Console.ReadKey(true);
             //Console.Clear();
@@ -80,9 +71,10 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 ProcessInput();
                 Update();
                 Draw();
-                
+
             }
             Ending();
+            Console.ReadKey(true);
         }
 
         static void StartGame()
@@ -119,24 +111,23 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.ReadKey(true);
             Console.Clear();
         }
+
         //Outside of game loop stuff
         static void MakeMap(int scale)
         {
-            for (int b = 0; b < map.GetLength(1) * scale + 2; b++)
+            int length = inGameMap.Length;
+            int height = inGameMap[0].Length;
+
+            for (int b = 0; b < height * scale + 2; b++)
             {
-                if(b == 0)
+                if (b == 0)
                 {
                     Console.Write("╔");
                 }
 
-                else if(b == map.GetLength(1) * scale + 1)
+                else if (b == height * scale + 1)
                 {
                     Console.Write("╗");
-                }
-
-                else if (b > map.GetLength(1) * scale + 1)
-                {
-                    Console.Write(" ");
                 }
                 else
                 {
@@ -145,85 +136,86 @@ namespace CharlieDobson_FirstPlayable_Programming1
             }
             Console.Write("\n");
 
-            for (int y = 0; y < map.GetLength(0); y++)
+
+
+            for (int y = 0; y < length; y++)
             {
+
                 for (int s = 0; s < scale; s++)
                 {
                     Console.Write("║");
-                    for (int x = 0; x < map.GetLength(1); x++)
-                    {
-                        for (int i = 0; i < scale; i++)
-                        {
-                            if (map[y, x] == "▒")
-                            {
-                                Console.BackgroundColor = ConsoleColor.Blue;
-                            }
-                            else if (map[y, x] == "░")
-                            {
-                                Console.BackgroundColor = ConsoleColor.Green;
-                            }
-                            else if (map[y, x] == "▓")
-                            {
-                                Console.BackgroundColor = ConsoleColor.Gray;
-                                Console.ForegroundColor = ConsoleColor.Gray;
-                            }
-                            else if (map[y, x] == "█")
-                            {
-                                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                            }
 
-                            Console.Write(map[y, x]);
-                            Console.ResetColor();
+                    for (int x = 0; x < height; x++)
+                    {
+                        char tile = inGameMap[y][x];
+
+                        if (tile == '▒')
+                        {
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                        }
+                        else if (tile == '░')
+                        {
+                            Console.BackgroundColor = ConsoleColor.Green;
+                        }
+                        else if (tile == '▓')
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        else if (tile == '█')
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkGreen;
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
                         }
 
+                        for (int c = 0; c < scale; c++)
+                        {
+                            Console.Write(tile);
+                        }
                     }
+                    Console.ResetColor();
                     Console.Write("║");
                     Console.Write("\n");
                 }
-
             }
 
-            for (int b = 0; b < map.GetLength(1) * scale + 2; b++)
+
+
+            for (int b = 0; b < height * scale + 2; b++)
             {
                 if (b == 0)
                 {
                     Console.Write("╚");
                 }
-                else if (b == map.GetLength(1) * scale + 1)
+
+                else if (b == height * scale + 1)
                 {
                     Console.Write("╝");
-                }
-                else if(b > map.GetLength(1) * scale + 1)
-                {
-                    Console.Write(" ");
                 }
                 else
                 {
                     Console.Write("═");
                 }
-
-                    
             }
+
+
         }
 
         static void MakeMapThread(int scale)
         {
-            for (int b = 0; b < map.GetLength(1) * scale + 2; b++)
+            int length = inGameMap.Length;
+            int height = inGameMap[0].Length;
+
+            for (int b = 0; b < height * scale + 2; b++)
             {
                 if (b == 0)
                 {
                     Console.Write("╔");
                 }
 
-                else if (b == map.GetLength(1) * scale + 1)
+                else if (b == height * scale + 1)
                 {
                     Console.Write("╗");
-                }
-
-                else if (b > map.GetLength(1) * scale + 1)
-                {
-                    Console.Write(" ");
                 }
                 else
                 {
@@ -233,67 +225,69 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Thread.Sleep(100);
             Console.Write("\n");
 
-            for (int y = 0; y < map.GetLength(0); y++)
+
+
+            for (int y = 0; y < length; y++)
             {
+
                 for (int s = 0; s < scale; s++)
                 {
                     Console.Write("║");
-                    for (int x = 0; x < map.GetLength(1); x++)
-                    {
-                        for (int i = 0; i < scale; i++)
-                        {
-                            if (map[y, x] == "▒")
-                            {
-                                Console.BackgroundColor = ConsoleColor.Blue;
-                            }
-                            else if (map[y, x] == "░")
-                            {
-                                Console.BackgroundColor = ConsoleColor.Green;
-                            }
-                            else if (map[y, x] == "▓")
-                            {
-                                Console.BackgroundColor = ConsoleColor.Gray;
-                                Console.ForegroundColor = ConsoleColor.Gray;
-                            }
-                            else if (map[y, x] == "█")
-                            {
-                                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                            }
 
-                            Console.Write(map[y, x]);
-                            Console.ResetColor();
+                    for (int x = 0; x < height; x++)
+                    {
+                        if (inGameMap[y][x] == '▒')
+                        {
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                        }
+                        else if (inGameMap[y][x] == '░')
+                        {
+                            Console.BackgroundColor = ConsoleColor.Green;
+                        }
+                        else if (inGameMap[y][x] == '▓')
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        else if (inGameMap[y][x] == '█')
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkGreen;
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
                         }
 
+                        for (int c = 0; c < scale; c++)
+                        {
+                            Console.Write(inGameMap[y][x]);
+                        }
                     }
+                    Console.ResetColor();
                     Console.Write("║");
                     Thread.Sleep(100);
                     Console.Write("\n");
                 }
-
             }
 
-            for (int b = 0; b < map.GetLength(1) * scale + 2; b++)
+
+
+
+            for (int b = 0; b < height * scale + 2; b++)
             {
                 if (b == 0)
                 {
                     Console.Write("╚");
                 }
-                else if (b == map.GetLength(1) * scale + 1)
+
+                else if (b == height * scale + 1)
                 {
                     Console.Write("╝");
-                }
-                else if (b > map.GetLength(1) * scale + 1)
-                {
-                    Console.Write(" ");
                 }
                 else
                 {
                     Console.Write("═");
                 }
-
-
             }
+
+
         }
 
         static void HUD()
@@ -366,7 +360,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
         //Actual Game loop logic
         static void ProcessInput()
         {
-            if (turn < 0) return;
+            if (turn == 0) return;
 
             yMovement = 0;
             xMovement = 0;
@@ -376,13 +370,13 @@ namespace CharlieDobson_FirstPlayable_Programming1
             {
                 input = Console.ReadKey(true).Key;
 
-                if(input != ConsoleKey.W || input != ConsoleKey.S || input != ConsoleKey.A || input != ConsoleKey.D)
+                if (input != ConsoleKey.W || input != ConsoleKey.S || input != ConsoleKey.A || input != ConsoleKey.D)
                 {
                     input = ConsoleKey.NoName;
                 }
             }
 
-            if(input == ConsoleKey.W)
+            if (input == ConsoleKey.W)
             {
                 yMovement--;
             }
@@ -407,19 +401,22 @@ namespace CharlieDobson_FirstPlayable_Programming1
         {
             HealthStatus();
 
-            if (xAxisPlayer + xMovement > 0 && xAxisPlayer + xMovement < map.GetLength(1) * scaleMap + 1)
+            if (xAxisPlayer + xMovement > 0 && xAxisPlayer + xMovement < inGameMap[0].Length * scaleMap + 1)
             {
                 xAxisPlayer += xMovement;
             }
 
-            if (yAxisPlayer + yMovement > 0 && yAxisPlayer + yMovement < map.GetLength(0) * scaleMap + 1)
+            if (yAxisPlayer + yMovement > 0 && yAxisPlayer + yMovement < inGameMap.Length * scaleMap + 1)
             {
                 yAxisPlayer += yMovement;
             }
+
+
             turn++;
         }
         static void Draw()
         {
+            Console.SetCursorPosition(0, 0);
             MakeMap(scaleMap);
             HUD();
 
@@ -430,8 +427,8 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.ResetColor();
         }
 
-        
 
-        
+
+
     }
 }
