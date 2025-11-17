@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace CharlieDobson_FirstPlayable_Programming1
 {
@@ -31,7 +32,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static string map = "Map.txt";
 
-        static string[] inGameMap = File.ReadAllLines(map);
+        static string[] inGameMap = System.IO.File.ReadAllLines(map);
 
         static int scaleMap = 2;
 
@@ -370,7 +371,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
             {
                 input = Console.ReadKey(true).Key;
 
-                if (input != ConsoleKey.W || input != ConsoleKey.S || input != ConsoleKey.A || input != ConsoleKey.D)
+                if (input != ConsoleKey.W && input != ConsoleKey.S && input != ConsoleKey.A && input != ConsoleKey.D)
                 {
                     input = ConsoleKey.NoName;
                 }

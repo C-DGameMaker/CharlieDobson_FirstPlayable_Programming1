@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "C:\\Charlie\u0027s Coding Assigments\\CharlieDobson_FirstPlayable_Programming1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C21D0014-4C8E-4B99-BE2A-006E7ECB1D3C}|CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1.csproj|C:\\Charlie\u0027s Coding Assigments\\CharlieDobson_FirstPlayable_Programming1\\charliedobson_firstplayable_programming1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C21D0014-4C8E-4B99-BE2A-006E7ECB1D3C}|CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1.csproj|c:\\charlie\u0027s coding assigments\\charliedobson_firstplayable_programming1\\charliedobson_firstplayable_programming1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C21D0014-4C8E-4B99-BE2A-006E7ECB1D3C}|CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1.csproj|solutionrelative:charliedobson_firstplayable_programming1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C21D0014-4C8E-4B99-BE2A-006E7ECB1D3C}|CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1.csproj|c:\\charlie\u0027s coding assigments\\charliedobson_firstplayable_programming1\\charliedobson_firstplayable_programming1\\map.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{C21D0014-4C8E-4B99-BE2A-006E7ECB1D3C}|CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1.csproj|C:\\Charlie\u0027s Coding Assigments\\CharlieDobson_FirstPlayable_Programming1\\charliedobson_firstplayable_programming1\\map.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{C21D0014-4C8E-4B99-BE2A-006E7ECB1D3C}|CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1.csproj|solutionrelative:charliedobson_firstplayable_programming1\\map.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
@@ -30,8 +30,7 @@
               "RelativeToolTip": "CharlieDobson_FirstPlayable_Programming1\\Map.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-11-17T13:34:23.155Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-17T13:34:23.155Z"
             },
             {
               "$type": "Document",
@@ -39,9 +38,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Charlie\u0027s Coding Assigments\\CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1\\Program.cs",
               "RelativeDocumentMoniker": "CharlieDobson_FirstPlayable_Programming1\\Program.cs",
-              "ToolTip": "C:\\Charlie\u0027s Coding Assigments\\CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1\\Program.cs*",
-              "RelativeToolTip": "CharlieDobson_FirstPlayable_Programming1\\Program.cs*",
-              "ViewState": "AgIAACQBAAAAAAAAAAAmwGoBAAAZAAAAAAAAAA==",
+              "ToolTip": "C:\\Charlie\u0027s Coding Assigments\\CharlieDobson_FirstPlayable_Programming1\\CharlieDobson_FirstPlayable_Programming1\\Program.cs",
+              "RelativeToolTip": "CharlieDobson_FirstPlayable_Programming1\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-10T14:28:07.152Z",
               "EditorCaption": ""
