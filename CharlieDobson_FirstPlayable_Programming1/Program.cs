@@ -45,6 +45,14 @@ namespace CharlieDobson_FirstPlayable_Programming1
             {"▓", "▓", "▓", "▓", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "░", "▓", "▓"},
         };
 
+        static int scaleMap = 2;
+        //Turn based stuff
+        static int turn = -1;
+
+        static int xMovement = 0;
+        static int yMovement = 0;
+
+        static ConsoleKey input;
         //Movement
 
         static int xAxisPlayer = 20;
@@ -66,13 +74,12 @@ namespace CharlieDobson_FirstPlayable_Programming1
             //StartGame();
             //Console.ReadKey(true);
             //Console.Clear();
+
             while (isAlive == true)
             {
                 ProcessInput();
                 Update();
                 Draw();
-                Console.ReadKey(true);
-                Console.Clear();
                 
             }
             Ending();
@@ -84,7 +91,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Thread.Sleep(1000);
             Console.Clear();
 
-            MakeMapThread(2);
+            MakeMapThread(scaleMap);
             Console.WriteLine();
             Console.WriteLine("Press any key to start");
         }
@@ -297,17 +304,21 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.SetCursorPosition(62, 1);
             Console.Write("~~~~~~~~~~");
             Console.SetCursorPosition(60, 2);
-            Console.Write($"Player Health: {playerHealth}");
-            Console.SetCursorPosition(60, 3);
-            Console.Write($"Staus: {playerStatus}");
+            Console.Write($"Turn: {turn}");
+            Console.SetCursorPosition(62, 3);
+            Console.Write("~~~~~~~~~~");
             Console.SetCursorPosition(60, 4);
-            Console.Write($"Total Gold: {curGold}");
+            Console.Write($"Player Health: {playerHealth}");
             Console.SetCursorPosition(60, 5);
+            Console.Write($"Staus: {playerStatus}");
+            Console.SetCursorPosition(60, 6);
+            Console.Write($"Total Gold: {curGold}");
+            Console.SetCursorPosition(60, 7);
             Console.Write($"Total enemies killed: {totalEnemyKilled}");
 
-            Console.SetCursorPosition(62, 6);
+            Console.SetCursorPosition(62, 8);
             Console.Write("~~~~~~~~~~");
-            Console.SetCursorPosition(60, 7);
+            Console.SetCursorPosition(60, 9);
             Console.Write($"Total Enemies on map: {Enemies.Count}");
 
 
@@ -355,15 +366,61 @@ namespace CharlieDobson_FirstPlayable_Programming1
         //Actual Game loop logic
         static void ProcessInput()
         {
+            if (turn < 0) return;
 
+            yMovement = 0;
+            xMovement = 0;
+
+            input = ConsoleKey.NoName;
+            while (input == ConsoleKey.NoName)
+            {
+                input = Console.ReadKey(true).Key;
+
+                if(input != ConsoleKey.W || input != ConsoleKey.S || input != ConsoleKey.A || input != ConsoleKey.D)
+                {
+                    input = ConsoleKey.NoName;
+                }
+            }
+
+            if(input == ConsoleKey.W)
+            {
+                yMovement--;
+            }
+            if(input == ConsoleKey.S)
+            {
+                yMovement++;
+            }
+            if(input == ConsoleKey.A)
+            {
+                xMovement--;
+            }
+            if(input == ConsoleKey.D)
+            {
+                xMovement++;
+            }
+
+           
+
+            
         }
         static void Update()
         {
             HealthStatus();
+
+            if (xAxisPlayer + xMovement > 0 && xAxisPlayer + xMovement < map.GetLength(1) * scaleMap + 1)
+            {
+                xAxisPlayer += xMovement;
+            }
+
+            if (yAxisPlayer + yMovement > 0 && yAxisPlayer + yMovement < map.GetLength(0) * scaleMap + 1)
+            {
+                yAxisPlayer += yMovement;
+            }
+            turn++;
         }
         static void Draw()
         {
-            MakeMap(2);
+            MakeMap(scaleMap);
             HUD();
 
             Console.SetCursorPosition(xAxisPlayer, yAxisPlayer);
