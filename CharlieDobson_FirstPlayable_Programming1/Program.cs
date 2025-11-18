@@ -356,7 +356,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.Write($"Enemy A Health: {enemyAHealth}");
             Console.SetCursorPosition(60, 11);
             Console.ForegroundColor = enemyColorB;
-            Console.Write($"Enemy B Color");
+            Console.Write($"Enemy B");
             Console.ResetColor();
             Console.SetCursorPosition(60, 12);
             Console.Write($"Enemy B Health: {enemyBHealth}");

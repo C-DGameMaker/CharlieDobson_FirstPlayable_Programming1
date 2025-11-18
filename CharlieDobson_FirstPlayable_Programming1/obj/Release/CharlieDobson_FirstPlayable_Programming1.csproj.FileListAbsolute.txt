@@ -8,3 +8,4 @@ C:\Charlie's Coding Assigments\CharlieDobson_FirstPlayable_Programming1\CharlieD
 C:\Charlie's Coding Assigments\CharlieDobson_FirstPlayable_Programming1\CharlieDobson_FirstPlayable_Programming1\obj\Release\CharlieDobson_FirstPlayable_Programming1.pdb
 C:\Charlie's Coding Assigments\CharlieDobson_FirstPlayable_Programming1\CharlieDobson_FirstPlayable_Programming1\obj\Release\CharlieDobson_FirstPlayable_Programming1.exe.config
 C:\Charlie's Coding Assigments\CharlieDobson_FirstPlayable_Programming1\CharlieDobson_FirstPlayable_Programming1\bin\Release\Map.txt
+C:\Charlie's Coding Assigments\CharlieDobson_FirstPlayable_Programming1\CharlieDobson_FirstPlayable_Programming1\bin\Release\Score.txt
