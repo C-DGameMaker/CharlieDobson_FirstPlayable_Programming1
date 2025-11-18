@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,43 +17,47 @@ namespace CharlieDobson_FirstPlayable_Programming1
         static string playerStatus = "";
         static int curGold;
         static bool isAlive = true;
-
-        //Enemy
-        static int enemyHealth;
-        static List<int> Enemies = new List<int>();
-        static Random enemyHealthRan = new Random();
-        static List<int> EnemyHealth = new List<int>();
         static int totalEnemyKilled;
 
+        //Enemy
+        static int enemyAHealth = 0;
+        static int enemyBHealth = 0;
+        static ConsoleColor[] EnemyColors = { ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.Cyan};
+        static ConsoleColor enemyColorA;
+        static ConsoleColor enemyColorB;
+        static bool sameAsPlayerA = true;
+        static bool sameAsPlayerB = true;
+
         //Map
-        // ░ = grass
-        // ▒ = water
-        // ▓ = mountain
-        // █ = trees
-
         static string map = "Map.txt";
-
         static string[] inGameMap = System.IO.File.ReadAllLines(map);
-
         static int scaleMap = 2;
-
         static ConsoleColor[] mapColors = { ConsoleColor.Green, ConsoleColor.DarkGreen, ConsoleColor.Blue, ConsoleColor.Gray};
+        static int curX;
+        static int curY;
 
         //Turn based stuff
         static int turn = 0;
-
         static int xMovement = 0;
         static int yMovement = 0;
-
         static ConsoleKey input;
-        //Movement
 
+        static Random rand = new Random();
+
+        //Movement
         static int xAxisPlayer = 20;
         static int yAxisPlayer = 17;
 
-        static int xAxisEnemy;
-        static int yAxisEnemy;
+        static int xAxisEnemyA;
+        static int yAxisEnemyA;
 
+        static int xAxisEnemyB;
+        static int yAxisEnemyB;
+
+        //Ending
+        static string scorePath = "Score.txt";
+        static bool length = false;
+        static string initials = "";
 
 
 
@@ -72,6 +77,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 ProcessInput();
                 Update();
                 Draw();
+                Thread.Sleep(100);
 
             }
             Ending();
@@ -99,8 +105,6 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.WriteLine("If an enemy walks into you, it will damage you.");
 
         }
-
-
         static void Ending()
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -108,6 +112,37 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.ResetColor();
 
             Console.WriteLine($"You killed {totalEnemyKilled} number of enemies.");
+            Console.WriteLine($"You collected {curGold} amount of Gold.");
+            List<string> allScores = new List<string>(System.IO.File.ReadAllLines(scorePath));
+
+            Console.WriteLine("Input your intitals here:");
+
+            while (length == false)
+            {
+                Console.WriteLine("Your initals should be three letters");
+                initials = Console.ReadLine();
+
+                if (initials.Length == 3)
+                {
+                    length = true;
+                }
+            }
+
+            string data = Convert.ToString(curGold + totalEnemyKilled) + ": " + initials + ": Gold earned: " + curGold 
+                + " and enemies killed: " + totalEnemyKilled;
+            allScores.Add(data);
+
+            allScores.Sort();
+            allScores.Reverse();
+
+            Console.WriteLine("ALL HIGH SCORE");
+            foreach (string score in allScores)
+            {
+                Console.WriteLine(score);
+            }
+
+            System.IO.File.WriteAllLines(scorePath, allScores);
+
             Console.WriteLine("RESET PRORGAM TO TRY AGAIN");
             Console.ReadKey(true);
             Console.Clear();
@@ -314,7 +349,18 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.SetCursorPosition(62, 8);
             Console.Write("~~~~~~~~~~");
             Console.SetCursorPosition(60, 9);
-            Console.Write($"Total Enemies on map: {Enemies.Count}");
+            Console.ForegroundColor = enemyColorA;
+            Console.Write($"Enemy A");
+            Console.ResetColor();
+            Console.SetCursorPosition(60, 10);
+            Console.Write($"Enemy A Health: {enemyAHealth}");
+            Console.SetCursorPosition(60, 11);
+            Console.ForegroundColor = enemyColorB;
+            Console.Write($"Enemy B Color");
+            Console.ResetColor();
+            Console.SetCursorPosition(60, 12);
+            Console.Write($"Enemy B Health: {enemyBHealth}");
+
 
 
         }
@@ -404,13 +450,28 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
             if (xAxisPlayer + xMovement > 0 && xAxisPlayer + xMovement < inGameMap[0].Length * scaleMap + 1)
             {
-                xAxisPlayer += xMovement;
+                
+                    xAxisPlayer += xMovement;
+               
+                
             }
 
             if (yAxisPlayer + yMovement > 0 && yAxisPlayer + yMovement < inGameMap.Length * scaleMap + 1)
             {
-                yAxisPlayer += yMovement;
+                    yAxisPlayer += yMovement;
+
             }
+
+            if(enemyAHealth < 1)
+            {
+                Enemy();
+            }
+            if(enemyBHealth < 1)
+            {
+                Enemy();
+            }
+
+            EnemyMovement();
 
 
             turn++;
@@ -421,11 +482,138 @@ namespace CharlieDobson_FirstPlayable_Programming1
             MakeMap(scaleMap);
             HUD();
 
+            Console.SetCursorPosition(60, 18);
+            Console.Write("Postions settings. . .");
+            Thread.Sleep(1000);
+            Console.SetCursorPosition(60, 18);
+            Console.Write("                      ");
+
+            Console.SetCursorPosition(xAxisEnemyA, yAxisEnemyA);
+            Console.ForegroundColor = enemyColorA;
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Write("#");
+            Console.ResetColor();
+
+            Console.SetCursorPosition(xAxisEnemyB, yAxisEnemyB);
+            Console.ForegroundColor = enemyColorB;
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.Write("#");
+            Console.ResetColor();
+
             Console.SetCursorPosition(xAxisPlayer, yAxisPlayer);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
             Console.Write("@");
             Console.ResetColor();
+
+            
+        }
+
+        static void Enemy()
+        {
+            if (enemyAHealth < 1)
+            {
+                enemyAHealth = rand.Next(2, 11) * 5;
+                enemyColorA = EnemyColors[rand.Next(0, 3)];
+
+                if(sameAsPlayerA == true)
+                {
+                    xAxisEnemyA = rand.Next(1, inGameMap[0].Length + 1);
+                    yAxisEnemyA = rand.Next(1, inGameMap.Length + 1);
+
+                    if (xAxisEnemyA != xAxisPlayer && yAxisEnemyA != yAxisPlayer)
+                    {
+                        sameAsPlayerA = false;
+                    }
+                }
+                
+            }
+
+            if (enemyBHealth < 1)
+            {
+                enemyBHealth = rand.Next(2, 11) * 5;
+                enemyColorB = EnemyColors[rand.Next(0, 3)];
+
+                if (sameAsPlayerB == true)
+                {
+                    xAxisEnemyB = rand.Next(1, inGameMap[0].Length + 1);
+                    yAxisEnemyB = rand.Next(1, inGameMap.Length + 1);
+
+                    if (xAxisEnemyB != xAxisPlayer && yAxisEnemyB != yAxisPlayer)
+                    {
+                        sameAsPlayerB = false;
+                    }
+                }
+            }
+        }
+
+        static void EnemyMovement()
+        {
+            int xAxisA = 0;
+            int yAxisA = 0;
+            if(xAxisEnemyA < xAxisPlayer)
+            {
+                xAxisA++;
+            }
+            else
+            {
+                xAxisA--;
+            }
+
+            if (yAxisEnemyA < yAxisPlayer)
+            {
+                yAxisA++;
+            }
+            else
+            {
+                yAxisA--;
+            }
+
+            if(xAxisEnemyA + xAxisA > 0 && xAxisEnemyA + xAxisA < inGameMap[0].Length * scaleMap + 1)
+            {
+                xAxisEnemyA += xAxisA;
+            }
+            if (yAxisEnemyA + yAxisA > 0 && yAxisEnemyA + yAxisA < inGameMap.Length * scaleMap + 1)
+            {
+                yAxisEnemyA += yAxisA;
+            }
+
+            int xAxisB = 0;
+            int yAxisB = 0;
+            if (xAxisEnemyB < xAxisPlayer)
+            {
+                xAxisB++;
+            }
+            else
+            {
+                xAxisB--;
+            }
+
+            if (yAxisEnemyB < yAxisPlayer)
+            {
+                yAxisB++;
+            }
+            else
+            {
+                yAxisB--;
+            }
+
+            if (xAxisEnemyB + xAxisB > 0 && xAxisEnemyB + xAxisB < inGameMap[0].Length * scaleMap + 1)
+            {
+                xAxisEnemyB += xAxisB;
+            }
+            if (yAxisEnemyB + yAxisB > 0 && yAxisEnemyB + yAxisB < inGameMap.Length * scaleMap + 1)
+            {
+                yAxisEnemyB += yAxisB;
+            }
+
+        }
+        
+
+        static void CoinsGained()
+        {
+            int coin = rand.Next(1, 11);
+            curGold += coin;
         }
 
 
