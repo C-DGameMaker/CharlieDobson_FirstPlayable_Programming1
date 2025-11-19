@@ -31,10 +31,9 @@ namespace CharlieDobson_FirstPlayable_Programming1
         //Map
         static string map = "Map.txt";
         static string[] inGameMap = System.IO.File.ReadAllLines(map);
-        static int scaleMap = 2;
         static ConsoleColor[] mapColors = { ConsoleColor.Green, ConsoleColor.DarkGreen, ConsoleColor.Blue, ConsoleColor.Gray};
-        static int curX;
-        static int curY;
+        static int curX = 0;
+        static int curY = 0;
 
         //Turn based stuff
         static int turn = 0;
@@ -54,6 +53,20 @@ namespace CharlieDobson_FirstPlayable_Programming1
         static int xAxisEnemyB;
         static int yAxisEnemyB;
 
+        static int xAxisA = 0;
+        static int yAxisA = 0;
+
+        static int xAxisB = 0;
+        static int yAxisB = 0;
+
+        static bool attack;
+
+        //Health
+        static int healthPickUPX;
+        static int healthPickUPY;
+
+        static int healthOnBoard;
+
         //Ending
         static string scorePath = "Score.txt";
         static bool length = false;
@@ -63,7 +76,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void Main(string[] args)
         {
-            Console.CursorVisible = false;
+            //Console.CursorVisible = false;
             //Intro();
             //Console.ReadKey(true);
             //Console.Clear();
@@ -74,6 +87,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
             while (isAlive == true)
             {
+                input = ConsoleKey.NoName;
                 ProcessInput();
                 Update();
                 Draw();
@@ -90,7 +104,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Thread.Sleep(1000);
             Console.Clear();
 
-            MakeMapThread(scaleMap);
+            MakeMapThread(1);
             Console.WriteLine();
             Console.WriteLine("Press any key to start");
         }
@@ -447,23 +461,34 @@ namespace CharlieDobson_FirstPlayable_Programming1
         static void Update()
         {
             HealthStatus();
+            Damage();
 
-            if (xAxisPlayer + xMovement > 0 && xAxisPlayer + xMovement < inGameMap[0].Length * scaleMap + 1)
+            if (attack == false)
             {
-                
+                if (xAxisPlayer + xMovement > 0 && xAxisPlayer + xMovement < inGameMap[0].Length * 1 + 1)
+                {
                     xAxisPlayer += xMovement;
-               
-                
-            }
 
-            if (yAxisPlayer + yMovement > 0 && yAxisPlayer + yMovement < inGameMap.Length * scaleMap + 1)
-            {
+                }
+
+                if (yAxisPlayer + yMovement > 0 && yAxisPlayer + yMovement < inGameMap.Length * 1 + 1)
+                {
                     yAxisPlayer += yMovement;
 
+                }
+
+                EnemyMovement();
             }
 
-            if(enemyAHealth < 1)
+            
+
+            if (playerHealth <= 0)
             {
+                isAlive = false;
+            }
+            
+            if (enemyAHealth < 1)
+            { 
                 Enemy();
             }
             if(enemyBHealth < 1)
@@ -471,19 +496,31 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 Enemy();
             }
 
-            EnemyMovement();
+            if(healthOnBoard < 0 && playerHealth < 100)
+            {
+                HealthPickup();
+                healthOnBoard++;
+            }
 
+            Heal();
 
             turn++;
         }
         static void Draw()
         {
+            Console.Clear();
             Console.SetCursorPosition(0, 0);
-            MakeMap(scaleMap);
+            MakeMap(1);
             HUD();
 
+            Console.SetCursorPosition(xAxisPlayer, yAxisPlayer);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.Write("@");
+            Console.ResetColor();
+
             Console.SetCursorPosition(60, 18);
-            Console.Write("Postions settings. . .");
+            Console.Write("Enemy Positions. . .");
             Thread.Sleep(1000);
             Console.SetCursorPosition(60, 18);
             Console.Write("                      ");
@@ -500,11 +537,16 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.Write("#");
             Console.ResetColor();
 
-            Console.SetCursorPosition(xAxisPlayer, yAxisPlayer);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.BackgroundColor = ConsoleColor.DarkYellow;
-            Console.Write("@");
-            Console.ResetColor();
+            if(healthOnBoard == 1)
+            {
+                Console.SetCursorPosition(healthPickUPX, healthPickUPY);
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                Console.Write("+");
+                Console.ResetColor();
+            }
+
+            
 
             
         }
@@ -513,6 +555,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
         {
             if (enemyAHealth < 1)
             {
+                sameAsPlayerA = true;
                 enemyAHealth = rand.Next(2, 11) * 5;
                 enemyColorA = EnemyColors[rand.Next(0, 3)];
 
@@ -531,6 +574,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
             if (enemyBHealth < 1)
             {
+                sameAsPlayerB = true;
                 enemyBHealth = rand.Next(2, 11) * 5;
                 enemyColorB = EnemyColors[rand.Next(0, 3)];
 
@@ -549,9 +593,11 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void EnemyMovement()
         {
-            int xAxisA = 0;
-            int yAxisA = 0;
-            if(xAxisEnemyA < xAxisPlayer)
+            xAxisA = 0;
+            yAxisA = 0;
+            xAxisB = 0;
+            yAxisB = 0;
+            if(xAxisEnemyA <= xAxisPlayer)
             {
                 xAxisA++;
             }
@@ -560,7 +606,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 xAxisA--;
             }
 
-            if (yAxisEnemyA < yAxisPlayer)
+            if (yAxisEnemyA <= yAxisPlayer)
             {
                 yAxisA++;
             }
@@ -569,17 +615,16 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 yAxisA--;
             }
 
-            if(xAxisEnemyA + xAxisA > 0 && xAxisEnemyA + xAxisA < inGameMap[0].Length * scaleMap + 1)
+            if(xAxisEnemyA + xAxisA > 0 && xAxisEnemyA + xAxisA < inGameMap[0].Length + 1)
             {
                 xAxisEnemyA += xAxisA;
             }
-            if (yAxisEnemyA + yAxisA > 0 && yAxisEnemyA + yAxisA < inGameMap.Length * scaleMap + 1)
+            if (yAxisEnemyA + yAxisA > 0 && yAxisEnemyA + yAxisA < inGameMap.Length + 1)
             {
                 yAxisEnemyA += yAxisA;
             }
 
-            int xAxisB = 0;
-            int yAxisB = 0;
+            
             if (xAxisEnemyB < xAxisPlayer)
             {
                 xAxisB++;
@@ -598,22 +643,77 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 yAxisB--;
             }
 
-            if (xAxisEnemyB + xAxisB > 0 && xAxisEnemyB + xAxisB < inGameMap[0].Length * scaleMap + 1)
+            if (xAxisEnemyB + xAxisB > 0 && xAxisEnemyB + xAxisB < inGameMap[0].Length + 1)
             {
                 xAxisEnemyB += xAxisB;
             }
-            if (yAxisEnemyB + yAxisB > 0 && yAxisEnemyB + yAxisB < inGameMap.Length * scaleMap + 1)
+            if (yAxisEnemyB + yAxisB > 0 && yAxisEnemyB + yAxisB < inGameMap.Length + 1)
             {
                 yAxisEnemyB += yAxisB;
             }
 
         }
         
+        static void Damage()
+        {
+            if(xAxisPlayer + xMovement  == xAxisEnemyA)
+            {
+                if (yAxisPlayer + yMovement == yAxisEnemyA)
+                {
+                    attack = true;
+                    playerHealth = playerHealth - 5;
+                    enemyAHealth = enemyAHealth - 5;
 
+                    if (enemyAHealth < 1)
+                    {
+                        CoinsGained();
+                        totalEnemyKilled++;
+                    }
+                    
+                }
+            }
+
+            if (xAxisPlayer + xMovement == xAxisEnemyB)
+            {
+                if (yAxisPlayer + yMovement == yAxisEnemyB)
+                {
+                    attack = true;
+                    playerHealth = playerHealth - 5;
+                    enemyBHealth = enemyBHealth - 5;
+                }
+
+                if (enemyBHealth < 1)
+                {
+                    CoinsGained();
+                    totalEnemyKilled++;
+                }
+            }
+
+            attack = false;
+        }
         static void CoinsGained()
         {
             int coin = rand.Next(1, 11);
             curGold += coin;
+        }
+
+        static void HealthPickup()
+        {
+            healthPickUPX = rand.Next(1, inGameMap[0].Length + 1);
+            healthPickUPX = rand.Next(1, inGameMap.Length + 1);
+
+        }
+
+        static void Heal()
+        {
+            if(xAxisPlayer == healthPickUPX)
+            {
+                if(yAxisPlayer == healthPickUPY)
+                {
+                    healthOnBoard--;
+                    playerHealth += 5;
+                }
+            }
         }
 
 
