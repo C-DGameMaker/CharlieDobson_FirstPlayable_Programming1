@@ -32,8 +32,6 @@ namespace CharlieDobson_FirstPlayable_Programming1
         static string map = "Map.txt";
         static string[] inGameMap = System.IO.File.ReadAllLines(map);
         static ConsoleColor[] mapColors = { ConsoleColor.Green, ConsoleColor.DarkGreen, ConsoleColor.Blue, ConsoleColor.Gray};
-        static int curX = 0;
-        static int curY = 0;
 
         //Turn based stuff
         static int turn = 0;
@@ -76,14 +74,14 @@ namespace CharlieDobson_FirstPlayable_Programming1
 
         static void Main(string[] args)
         {
-            //Console.CursorVisible = false;
-            //Intro();
-            //Console.ReadKey(true);
-            //Console.Clear();
+            Console.CursorVisible = false;
+            Intro();
+            Console.ReadKey(true);
+            Console.Clear();
 
-            //StartGame();
-            //Console.ReadKey(true);
-            //Console.Clear();
+            StartGame();
+            Console.ReadKey(true);
+            Console.Clear();
 
             while (isAlive == true)
             {
@@ -94,6 +92,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 Thread.Sleep(100);
 
             }
+            Console.Clear();
             Ending();
             Console.ReadKey(true);
         }
@@ -117,7 +116,6 @@ namespace CharlieDobson_FirstPlayable_Programming1
             Console.WriteLine("Use WSAD to walk.");
             Console.WriteLine("If you walk into an enemy, you will damage it.");
             Console.WriteLine("If an enemy walks into you, it will damage you.");
-
         }
         static void Ending()
         {
@@ -480,7 +478,6 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 EnemyMovement();
             }
 
-            
 
             if (playerHealth <= 0)
             {
@@ -496,7 +493,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
                 Enemy();
             }
 
-            if(healthOnBoard < 0 && playerHealth < 100)
+            if(healthOnBoard != 1 && playerHealth < 100)
             {
                 HealthPickup();
                 healthOnBoard++;
@@ -700,7 +697,7 @@ namespace CharlieDobson_FirstPlayable_Programming1
         static void HealthPickup()
         {
             healthPickUPX = rand.Next(1, inGameMap[0].Length + 1);
-            healthPickUPX = rand.Next(1, inGameMap.Length + 1);
+            healthPickUPY = rand.Next(1, inGameMap.Length + 1);
 
         }
 
